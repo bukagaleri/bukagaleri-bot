@@ -1,0 +1,27 @@
+{
+  "name": "bukagaleri-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bukagaleri/bukagaleri-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bukagaleri/bukagaleri-bot/issues"
+  },
+  "homepage": "https://github.com/bukagaleri/bukagaleri-bot#readme",
+  "dependencies": {
+    "app-module-path": "^2.2.0",
+    "dotenv": "^4.0.0",
+    "instagram-private-api": "^0.6.2",
+    "mongoose": "^4.11.7",
+    "node-telegram-bot-api": "^0.27.1",
+    "request": "^2.81.0"
+  }
+}
