@@ -38,12 +38,14 @@ const messages = {
 
 bot.onText(/\/register (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
-  const teleUserId = msg.from.id;
+  const teleUser = msg.from;
   const messageId = msg.message_id;
   const igUsername = match[1].replace(/\s+/g, '');
 
+  const inGroup = chatId == mainGroup;
+
   bot.sendMessage(chatId, messages['WAIT_REGISTER'], {reply_to_message_id: messageId});
-  users.registerIg(teleUserId, igUsername, (resp) => {
+  users.registerIg(teleUser, igUsername, inGroup, (resp) => {
     bot.sendMessage(chatId, messages[resp.message_code], {reply_to_message_id: messageId});
   });
 });

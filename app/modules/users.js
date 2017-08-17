@@ -37,20 +37,21 @@ module.exports = (() => {
         }
       });
     },
-    registerIg: (teleId, igUsername, callback) => {
-      Users.find({teleUserId: teleId}, (err, result) => {
+    registerIg: (teleUser, igUsername, inGroup, callback) => {
+      Users.find({teleUserId: teleUser.id}, (err, result) => {
         if (err) throw err;
-        if (result.length) {
-          const user = result[0];
+        if (result.length || inGroup) {
+          const user = result.length ? result[0] : Users();
           Client.Session.create(device, storage, process.env.IG_USERNAME, process.env.IG_PASSWORD).then((session) => {
             return [session, Client.Account.searchForUser(session, igUsername)];
           }).spread((session, account) => {
       			const igId = account._params.id;
             const fullName = account._params.fullName;
 
-            const user = result[0];
             user.userId = igId;
             user.username = igUsername;
+            user.teleUserId = teleUser.id;
+            user.teleUsername = teleUser.username;
             user.fullName = fullName;
             user.save((err) => {
               if (err) throw err;
