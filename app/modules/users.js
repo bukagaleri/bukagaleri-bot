@@ -45,7 +45,7 @@ module.exports = (() => {
           Client.Session.create(device, storage, process.env.IG_USERNAME, process.env.IG_PASSWORD).then((session) => {
             return [session, Client.Account.searchForUser(session, igUsername)];
           }).spread((session, account) => {
-      			const igId = account._params.id;
+            const igId = account._params.id;
             const fullName = account._params.fullName;
 
             user.userId = igId;
@@ -59,9 +59,11 @@ module.exports = (() => {
               Client.Relationship.create(session, account.id);
               callback({status: 'OK', message_code: 'USER_REGISTERED'});
             });
-      		});
-        } else {
-          callback({status: 'ERROR', message_code: 'USER_NOT_FOUND'});
+      		}).catch((e) => {
+            if (e.name == 'IGAccountNotFoundError') {
+              callback({status: 'ERROR', message_code: 'IG_USER_NOT_FOUND'});
+            }
+          });
         }
       });
     }
