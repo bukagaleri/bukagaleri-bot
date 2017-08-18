@@ -15,7 +15,7 @@ function tagline() {
 }
 
 function greeting(opts) {
-  return `Halo @${opts.username}, selamat datang di <b>${opts.groupName}</b>.\n\nYuk daftarkan akun Instagram kamu dulu dengan cara japri ke @${process.env.BOT_USERNAME} dengan format \n\n<code>/register username_instagram</code>${tagline()}`
+  return `Halo ${opts.names}, selamat datang di <b>${opts.groupName}</b>.\n\nYuk daftarkan akun Instagram kamu dulu dengan cara <b>japri</b> ke @${process.env.BOT_USERNAME} dengan format \n\n<code>/register username_instagram</code>${tagline()}`
 }
 
 function introduction(opts) {
@@ -35,12 +35,36 @@ function wrongFormat() {
   return `Hai, Bukan begitu ya.\nKamu bisa daftarin Instagram kamu dengan format \n\n<code>/register username_instagram</code>`;
 }
 
+const pendingUsers = [];
+
+let greetingTimeout;
+
+function pendingUsersGreeting(chatId, groupName) {
+  clearTimeout(greetingTimeout);
+  greetingTimeout = setTimeout(() => {
+    if (pendingUsers.length) {
+      let names;
+      if (pendingUsers.length == 1) {
+        names = pendingUsers[0];
+      } else if (pendingUsers.length == 2) {
+        names = pendingUsers,join(', dan ');
+      } else {
+        names = `${pendingUsers.splice(0, 2).join(', ')}, dan lainnya`;
+      }
+      bot.sendMessage(chatId, greeting({groupName: groupName, names: names}), {parse_mode: 'html'});
+      pendingUsers = [];
+    }
+  }, 60000)
+}
+
+
 bot.on('new_chat_participant', (msg, match) => {
   const chatId = msg.chat.id;
   const user = msg['new_chat_participant'];
   if (chatId == mainGroupId && !/_bot$/gi.test(user.username)) {
     users.addUser(user);
-    bot.sendMessage(chatId, greeting({groupName: msg.chat.title, username: user.username}), {parse_mode: 'html'});
+    pendingUsers.push(user.first_name);
+    pendingUsersGreeting(chatId, msg.chat.title);
   }
 });
 
