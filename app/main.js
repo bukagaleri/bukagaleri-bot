@@ -36,7 +36,7 @@ const messages = {
   'WAIT_REGISTER': 'Tunggu sebentar ya'
 }
 
-bot.onText(/\/register (.+)/, (msg, match) => {
+bot.onText(/^\/register (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   const teleUser = msg.from;
   const messageId = msg.message_id;
