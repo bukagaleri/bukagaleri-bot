@@ -54,7 +54,7 @@ function pendingUsersGreeting(groupName) {
       bot.sendMessage(mainGroupId, greeting({groupName: groupName, names: names}), {parse_mode: 'html'});
       pendingUsers = [];
     }
-  }, 60000)
+  }, 15000)
 }
 
 
