@@ -3,6 +3,7 @@
 'use strict'
 
 const TelegramBot = require('node-telegram-bot-api');
+const inlineLists = require('common-tags/lib/inlineLists');
 
 const users = require('modules/users');
 const arrayHelper = require('helpers/array');
@@ -98,5 +99,34 @@ bot.onText(/^\/register$/, (msg) => {
   const chatId = msg.chat.id;
   const messageId = msg.message_id;
 
-  bot.sendMessage(chatId, wrongFormat(), {parse_mode: 'html', reply_to_message_id: messageId})
+  bot.sendMessage(chatId, wrongFormat(), {parse_mode: 'html', reply_to_message_id: messageId});
+});
+
+bot.onText(/^\/forward ((?:.|\n)+)/, (msg, match) => {
+  const userId = msg.from.id;
+  const text = match[1];
+  const chatType = msg.chat.type;
+
+  if (chatType == 'private' && userId == process.env.SUPERADMIN_ID) {
+    bot.sendMessage(mainGroupId, text, {parse_mode: 'markdown'});
+  }
+});
+
+bot.onText(/^\/helpmarkdown$/, (msg, match) => {
+  const userId = msg.from.id;
+  const text = match[1];
+  const chatType = msg.chat.type;
+  const chatId = msg.chat.id;
+
+  if (chatType == 'private' && userId == process.env.SUPERADMIN_ID) {
+    const str = inlineLists`
+      <code>*bold text*
+      _italic text_
+      [inline URL](http://www.example.com/)
+      [inline mention of a user](tg://user?id=123456789)
+      \`inline code\`
+      \`\`\`block code\`\`\`</code>
+    `;
+    bot.sendMessage(chatId, str, {parse_mode: 'html'});
+  }
 });
