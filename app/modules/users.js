@@ -14,14 +14,21 @@ module.exports = (() => {
       const username = teleUser.username;
       Users.find({teleUserId: userId}, (err, result) => {
         if (err) throw err;
-        if (!result.length) {
-          const user = Users();
+        let user;
+        if (result.length) {
+          user = result[0];
+          user.active = true;
+        } else {
+          user = Users();
           user.teleUserId = userId;
           user.teleUsername = username;
-          user.save((err) => {
-            console.log(`teleUser ${teleUser.username} has been added`);
-          });
+          user.active = true;
         }
+
+        user.save((err) => {
+          console.log(`teleUser ${teleUser.username} has been added`);
+        });
+
       });
     },
     removeUser: (teleUser, callback) => {
@@ -30,9 +37,10 @@ module.exports = (() => {
         if (err) throw err;
         if (result.length) {
           const user = result[0];
-          user.remove((err) => {
+          user.active = false;
+          user.save((err) => {
             if (err) throw err;
-            console.log(`teleUser ${teleUser.username} has been removed`);
+            console.log(`teleUser ${teleUser.username} has been deactivated`);
           });
         }
       });
