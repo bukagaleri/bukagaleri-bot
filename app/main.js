@@ -40,7 +40,7 @@ const pendingUsers = [];
 
 let greetingTimeout;
 
-function pendingUsersGreeting(chatId, groupName) {
+function pendingUsersGreeting(groupName) {
   clearTimeout(greetingTimeout);
   greetingTimeout = setTimeout(() => {
     if (pendingUsers.length) {
@@ -52,10 +52,10 @@ function pendingUsersGreeting(chatId, groupName) {
       } else {
         names = `${pendingUsers.splice(0, 2).join(', ')}, dan lainnya`;
       }
-      bot.sendMessage(chatId, greeting({groupName: groupName, names: names}), {parse_mode: 'html'});
+      bot.sendMessage(mainGroupId, greeting({groupName: groupName, names: names}), {parse_mode: 'html'});
       pendingUsers = [];
     }
-  }, 60000)
+  }, 15000)
 }
 
 
@@ -65,7 +65,7 @@ bot.on('new_chat_participant', (msg, match) => {
   if (chatId == mainGroupId && !/_bot$/gi.test(user.username)) {
     users.addUser(user);
     pendingUsers.push(user.first_name);
-    pendingUsersGreeting(chatId, msg.chat.title);
+    pendingUsersGreeting(msg.chat.title);
   }
 });
 
