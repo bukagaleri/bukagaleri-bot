@@ -48,12 +48,12 @@ function pendingUsersGreeting(groupName) {
       if (pendingUsers.length == 1) {
         names = pendingUsers[0];
       } else if (pendingUsers.length == 2) {
-        names = pendingUsers,join(', dan ');
+        names = pendingUsers.join(', dan ');
       } else {
         names = `${pendingUsers.splice(0, 2).join(', ')}, dan lainnya`;
       }
       bot.sendMessage(mainGroupId, greeting({groupName: groupName, names: names}), {parse_mode: 'html'});
-      pendingUsers = [];
+      pendingUsers.length = 0;
     }
   }, 15000)
 }
