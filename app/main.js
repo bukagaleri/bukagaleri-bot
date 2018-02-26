@@ -64,8 +64,8 @@ bot.on('new_chat_participant', (msg, match) => {
   const user = msg['new_chat_participant'];
   if (chatId == mainGroupId && !/_bot$/gi.test(user.username)) {
     users.addUser(user);
-    pendingUsers.push(user.first_name);
-    pendingUsersGreeting(msg.chat.title);
+    // pendingUsers.push(user.first_name);
+    // pendingUsersGreeting(msg.chat.title);
   }
 });
 
